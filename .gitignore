@@ -1,0 +1,14 @@
+*.pyc
+*~
+*/*.pyc
+*/*/*.pyc
+.virts
+.coverage
+build
+dist
+*.tar.gz
+*.log
+coverage.xml
+*.egg-info
+.#*
+coverage-html
