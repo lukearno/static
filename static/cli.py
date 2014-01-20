@@ -10,4 +10,4 @@ def run():
         from wsgiref.simple_server import make_server
         make_server(host, int(port), app).serve_forever()
     except KeyboardInterrupt:
-        print "Cio, baby!"
+        print("Cio, baby!")

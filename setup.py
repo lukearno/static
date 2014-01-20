@@ -1,4 +1,3 @@
-
 import os
 
 from setuptools import setup, find_packages
@@ -41,5 +40,6 @@ setup(name=PROJECT,
                    'Programming Language :: Python :: 2.7',
                    'Programming Language :: Python :: 3.2',
                    'Programming Language :: Python :: 3.3',
+                   'Programming Language :: Python :: 3.4',
                    'Topic :: Software Development :: Libraries',
                    'Topic :: Utilities'])
