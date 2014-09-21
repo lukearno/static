@@ -16,7 +16,7 @@ test-python:
 	. .virts/$(pyversion)/bin/activate && pip install -e '.' > /dev/null
 	. .virts/$(pyversion)/bin/activate && nosetests tests/
 stylecheck:
-	. .virts/dev/bin/activate && flake8 static tests --max-complexity=12
+	. .virts/dev/bin/activate && flake8 static tests --max-complexity=14
 test:
 	. .virts/dev/bin/activate && nosetests -xs --with-coverage --cover-package static --cover-html --cover-html-dir coverage-html tests/
 viewcoverage:

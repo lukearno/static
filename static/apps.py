@@ -100,6 +100,10 @@ class Cling(object):
                 return self.moved_permanently(environ, start_response, headers)
             else:
                 full_path = self._full_path(path_info + self.index_file)
+        prezipped = ('gzip' in environ['HTTP_ACCEPT_ENCODING']
+                     and path.exists(full_path + '.gz'))
+        if prezipped:
+            full_path += '.gz'
         content_type = self._guess_type(full_path)
         try:
             etag, last_modified = self._conditions(full_path, environ)
@@ -115,6 +119,9 @@ class Cling(object):
                 return self.not_modified(environ, start_response, headers)
             file_like = self._file_like(full_path)
             headers.append(('Content-Type', content_type))
+            if prezipped:
+                headers.extend([('Content-Encoding', 'gzip'),
+                                ('Vary', 'Accept-Encoding')])
             start_response("200 OK", headers)
             if environ['REQUEST_METHOD'] == 'GET':
                 return self._body(full_path, environ, file_like)
