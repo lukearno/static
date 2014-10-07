@@ -210,3 +210,29 @@ class StaticShockTests(Intercepted):
         self.assert_response(
             'GET', '/no-such-file.txt', {},
             404)
+
+
+class StaticClingWithPrezipping(Intercepted):
+
+    def get_app(self):
+        return static.Cling('tests/data/prezip')
+
+    def test_client_gets_prezipped_content(self):
+        self.assert_response(
+            'GET', '/static.txt', {'Accept-Encoding': 'gzip, deflate'},
+            200,
+            response_headers={'Content-Encoding': 'gzip'},
+            file_content="tests/data/prezip/static.txt.gz")
+
+    def test_client_gets_non_prezipped_when_no_accept_encoding_present(self):
+        self.assert_response(
+            'GET', '/static.txt', {},
+            200,
+            file_content="tests/data/prezip/static.txt")
+
+    def test_client_gets_non_prezipped_when_prezipped_file_not_exist(self):
+        self.assert_response(
+            'GET', '/nogzipversionpresent.txt',
+            {'Accept-Encoding': 'gzip, deflate'},
+            200,
+            file_content="tests/data/prezip/nogzipversionpresent.txt")
