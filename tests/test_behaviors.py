@@ -15,6 +15,15 @@ except ImportError:
 import static
 
 
+class StripAcceptEncoding(object):
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        environ.pop('HTTP_ACCEPT_ENCODING', None)
+        return self.application(environ, start_response)
+
+
 class Intercepted(TestCase):
 
     def setUp(self):
@@ -214,8 +223,12 @@ class StaticShockTests(Intercepted):
 
 class StaticClingWithPrezipping(Intercepted):
 
+    def setUp(self):
+        self._app = static.Cling('tests/data/prezip')
+        super(StaticClingWithPrezipping, self).setUp()
+
     def get_app(self):
-        return static.Cling('tests/data/prezip')
+        return self._app
 
     def test_client_gets_prezipped_content(self):
         self.assert_response(
@@ -225,6 +238,14 @@ class StaticClingWithPrezipping(Intercepted):
             file_content="tests/data/prezip/static.txt.gz")
 
     def test_client_gets_non_prezipped_when_no_accept_encoding_present(self):
+        # strip HTTP_ACCEPT_ENCODING from the environ, to simulate not getting the header at all
+        self._app = StripAcceptEncoding(self.get_app())
+        self.assert_response(
+            'GET', '/static.txt', {},
+            200,
+            file_content="tests/data/prezip/static.txt")
+
+    def test_client_gets_non_prezipped_when_accept_missing_gzip(self):
         self.assert_response(
             'GET', '/static.txt', {},
             200,

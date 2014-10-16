@@ -100,7 +100,7 @@ class Cling(object):
                 return self.moved_permanently(environ, start_response, headers)
             else:
                 full_path = self._full_path(path_info + self.index_file)
-        prezipped = ('gzip' in environ['HTTP_ACCEPT_ENCODING']
+        prezipped = ('gzip' in environ.get('HTTP_ACCEPT_ENCODING', '')
                      and path.exists(full_path + '.gz'))
         if prezipped:
             full_path += '.gz'
