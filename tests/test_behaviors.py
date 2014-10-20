@@ -238,7 +238,7 @@ class StaticClingWithPrezipping(Intercepted):
             file_content="tests/data/prezip/static.txt.gz")
 
     def test_client_gets_non_prezipped_when_no_accept_encoding_present(self):
-        # strip HTTP_ACCEPT_ENCODING from the environ, to simulate not getting the header at all
+        # strip HTTP_ACCEPT_ENCODING from the environ
         self._app = StripAcceptEncoding(self.get_app())
         self.assert_response(
             'GET', '/static.txt', {},
